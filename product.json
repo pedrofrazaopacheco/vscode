@@ -33,6 +33,55 @@
 	"nodejsRepository": "https://nodejs.org",
 	"urlProtocol": "code-oss",
 	"webviewContentExternalBaseUrlTemplate": "https://{{uuid}}.vscode-cdn.net/insider/ef65ac1ba57f57f2a3961bfe94aa20481caca4c6/out/vs/workbench/contrib/webview/browser/pre/",
+	"extensionEnabledApiProposals": {
+		"GitHub.copilot": ["inlineCompletionsAdditions"],
+		"GitHub.copilot-chat": [
+			"interactive",
+			"terminalDataWriteEvent",
+			"terminalExecuteCommandEvent",
+			"terminalSelection",
+			"terminalQuickFixProvider",
+			"chatParticipantAdditions",
+			"defaultChatParticipant",
+			"embeddings",
+			"chatEditing",
+			"chatProvider",
+			"mappedEditsProvider",
+			"aiRelatedInformation",
+			"codeActionAI",
+			"findTextInFiles",
+			"textSearchProvider",
+			"textSearchProvider2",
+			"activeComment",
+			"commentReveal",
+			"contribSourceControlInputBoxMenu",
+			"contribCommentEditorActionsMenu",
+			"contribCommentThreadAdditionalMenu",
+			"contribCommentsViewThreadMenus",
+			"newSymbolNamesProvider",
+			"findFiles2",
+			"extensionsAny",
+			"authLearnMore",
+			"testObserver",
+			"aiTextSearchProvider",
+			"documentFiltersExclusive",
+			"chatParticipantPrivate",
+			"contribDebugCreateConfiguration",
+			"inlineEdit"
+		],
+		"vscode.github-authentication": ["authLearnMore", "authIssuers"]
+	},
+	"defaultChatAgent": {
+		"extensionId": "GitHub.copilot",
+		"chatExtensionId": "GitHub.copilot-chat"
+	},
+	"trustedExtensionAuthAccess": {
+		"github": [
+			"GitHub.copilot",
+			"GitHub.copilot-chat",
+			"vscode.github-authentication"
+		]
+	},
 	"builtInExtensions": [
 		{
 			"name": "ms-vscode.js-debug-companion",

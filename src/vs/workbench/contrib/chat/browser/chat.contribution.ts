@@ -720,6 +720,7 @@ registerChatExecuteActions();
 registerQuickChatActions();
 registerChatExportActions();
 registerMoveActions();
+registerChatExportActions();
 registerNewChatActions();
 registerChatContextActions();
 registerChatDeveloperActions();

@@ -25,6 +25,7 @@ import { Action2, MenuId, registerAction2 } from '../../../../../platform/action
 /* chat ------------------------------------------------------------------------------------ */
 import { IChatService } from '../../common/chatService.js';
 import { ChatViewId } from '../chat.js';   // acrescenta para usar o id
+import { ChatContextKeys } from '../../common/chatContextKeys.js';
 
 /* Chaves de storage (por workspace) ------------------------------------------------------- */
 const STORAGE_ENABLED = 'chat.autoSave.enabled';
@@ -48,6 +49,7 @@ class ToggleChatAutoSaveAction extends Action2 {
 			title: { value: nls.localize('chat.autoSave', "Auto-save Chat Transcript"), original: 'Auto-save Chat Transcript' },
 			icon: Codicon.save,
 			f1: false,
+			precondition: ContextKeyExpr.and(ChatContextKeys.chatMode, ContextKeyExpr.not(ChatContextKeys.requestInProgress.key)),
 			menu: {
 				id: MenuId.ViewTitle,
 				when: ContextKeyExpr.equals('view', ChatViewId),
