@@ -111,6 +111,7 @@ import { registerAction2 } from '../../../../platform/actions/common/actions.js'
 import product from '../../../../platform/product/common/product.js';
 import { ChatModeService, IChatModeService } from '../common/chatModes.js';
 import './actions/toggleChatAutoSave.js';
+import { registerExportActions } from './actions/chatExportActions.js';
 
 // Register configuration
 const configurationRegistry = Registry.as<IConfigurationRegistry>(ConfigurationExtensions.Configuration);
@@ -720,7 +721,7 @@ registerChatExecuteActions();
 registerQuickChatActions();
 registerChatExportActions();
 registerMoveActions();
-registerChatExportActions();
+registerExportActions();
 registerNewChatActions();
 registerChatContextActions();
 registerChatDeveloperActions();
