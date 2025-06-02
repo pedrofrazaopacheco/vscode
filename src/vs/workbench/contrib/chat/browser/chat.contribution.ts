@@ -110,7 +110,6 @@ import { ChatViewsWelcomeHandler } from './viewsWelcome/chatViewsWelcomeHandler.
 import { registerAction2 } from '../../../../platform/actions/common/actions.js';
 import product from '../../../../platform/product/common/product.js';
 import { ChatModeService, IChatModeService } from '../common/chatModes.js';
-import './actions/toggleChatAutoSave.js';
 import { registerExportActions } from './actions/chatExportActions.js';
 
 // Register configuration
