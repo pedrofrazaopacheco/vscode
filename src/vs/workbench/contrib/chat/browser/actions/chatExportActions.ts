@@ -23,11 +23,11 @@ import { INotificationService } from '../../../../../platform/notification/commo
 
 export function registerExportActions(): void {
 	registerAction2(
-		class ExportChatToMarkdownAction extends Action2 {
+		class ExportChatToJSONAction extends Action2 {
 			constructor() {
 				super({
-					id: 'workbench.action.chat.exportToMarkdown',
-					title: localize2('chat.exportToMarkdown.label', 'Export Chat to Markdown'),
+					id: 'workbench.action.chat.exportToJSON',
+					title: localize2('chat.exportToJSON.label', 'Export Chat to JSON'),
 					category: CHAT_CATEGORY,
 					icon: Codicon.cloudDownload,
 					precondition: ChatContextKeys.enabled,
@@ -68,18 +68,18 @@ export function registerExportActions(): void {
 				}
 
 				const viewModel = widget.viewModel;
-				const markdown = JSON.stringify(
+				const json = JSON.stringify(
 					viewModel.model.toJSON(),
 					null,
 					4
 				);
 				const title: string = viewModel.model.title;
 
-				const defaultName: string = `Github-Copilot-Chat-${title}.md`;
+				const defaultName: string = `Github-Copilot-Chat-${title}.json`;
 
 				const targetUri = await dialogSvc.showSaveDialog({
-					title: localize2('chat.exportToMarkdown.save.title', 'Export Chat to Markdown').value,
-					filters: [{ name: 'Markdown', extensions: ['md'] }],
+					title: localize2('chat.exportToJSON.save.title', 'Export Chat to JSON').value,
+					filters: [{ name: 'JSON', extensions: ['json'] }],
 					defaultUri: URI.from({ scheme: Schemas.file, path: `/${defaultName}` })
 				});
 
@@ -88,7 +88,7 @@ export function registerExportActions(): void {
 				}
 
 				try {
-					await fileSvc.writeFile(targetUri, VSBuffer.fromString(markdown));
+					await fileSvc.writeFile(targetUri, VSBuffer.fromString(json));
 
 					notificationSvc.info(
 						localize2(
