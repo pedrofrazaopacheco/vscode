@@ -35,13 +35,13 @@ export function registerExportActions(): void {
 						{
 							id: MenuId.ViewTitle,
 							when: ContextKeyExpr.equals('view', ChatViewId),
-							group: '1_export',
+							group: 'z_export',
 							order: 1
 						},
 						{
 							id: MenuId.EditorTitle,
 							when: ActiveEditorContext.isEqualTo(ChatEditorInput.EditorID),
-							group: 'z_commands',
+							group: 'z_export',
 							order: 10
 						}
 					]
