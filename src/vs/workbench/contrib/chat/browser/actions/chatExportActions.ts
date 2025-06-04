@@ -9,8 +9,8 @@ import { Action2, MenuId, registerAction2 } from '../../../../../platform/action
 import { ContextKeyExpr } from '../../../../../platform/contextkey/common/contextkey.js';
 import { ServicesAccessor } from '../../../../../platform/instantiation/common/instantiation.js';
 import { IFileDialogService } from '../../../../../platform/dialogs/common/dialogs.js';
-import { URI } from '../../../../../base/common/uri.js';
 import { VSBuffer } from '../../../../../base/common/buffer.js';
+import { joinPath } from '../../../../../base/common/resources.js';
 import { IFileService } from '../../../../../platform/files/common/files.js';
 import { isChatViewTitleActionContext } from '../../common/chatActions.js';
 import { ChatContextKeys } from '../../common/chatContextKeys.js';
@@ -18,7 +18,6 @@ import { ChatViewId, IChatWidgetService } from '../chat.js';
 import { CHAT_CATEGORY } from './chatActions.js';
 import { ActiveEditorContext } from '../../../../common/contextkeys.js';
 import { ChatEditorInput } from '../chatEditorInput.js';
-import { Schemas } from '../../../../../base/common/network.js';
 import { INotificationService } from '../../../../../platform/notification/common/notification.js';
 
 export function registerExportActions(): void {
@@ -29,7 +28,7 @@ export function registerExportActions(): void {
 					id: 'workbench.action.chat.exportToJSON',
 					title: localize2('chat.exportToJSON.label', 'Export Chat to JSON'),
 					category: CHAT_CATEGORY,
-					icon: Codicon.cloudDownload,
+					icon: Codicon.desktopDownload,
 					precondition: ChatContextKeys.enabled,
 					f1: true,
 					menu: [
@@ -42,7 +41,7 @@ export function registerExportActions(): void {
 						{
 							id: MenuId.EditorTitle,
 							when: ActiveEditorContext.isEqualTo(ChatEditorInput.EditorID),
-							group: 'navigation',
+							group: 'z_commands',
 							order: 10
 						}
 					]
@@ -50,47 +49,49 @@ export function registerExportActions(): void {
 			}
 			async run(accessor: ServicesAccessor, ...args: unknown[]): Promise<void> {
 				const context = args[0];
-				const widgetSvc: IChatWidgetService = accessor.get(IChatWidgetService);
-				const dialogSvc: IFileDialogService = accessor.get(IFileDialogService);
-				const fileSvc: IFileService = accessor.get(IFileService);
-				const notificationSvc: INotificationService = accessor.get(INotificationService);
+				const chatWidgetService: IChatWidgetService = accessor.get(IChatWidgetService);
+				const fileDialogService: IFileDialogService = accessor.get(IFileDialogService);
+				const fileService: IFileService = accessor.get(IFileService);
+				const notificationService: INotificationService = accessor.get(INotificationService);
 
 				const widget =
 					isChatViewTitleActionContext(context) && context.sessionId
-						? widgetSvc.getWidgetBySessionId(context.sessionId)
-						: widgetSvc.lastFocusedWidget;
+						? chatWidgetService.getWidgetBySessionId(context.sessionId)
+						: chatWidgetService.lastFocusedWidget;
 
 				if (!widget || !widget.viewModel) {
-					notificationSvc.error(
+					notificationService.error(
 						localize2('chat.export.noWidget', 'No chat session available to export').value
 					);
 					return;
 				}
 
 				const viewModel = widget.viewModel;
-				const json = JSON.stringify(
+				const chatData = JSON.stringify(
 					viewModel.model.toJSON(),
 					null,
 					4
 				);
-				const title: string = viewModel.model.title;
+				const title = viewModel.model.title;
 
-				const defaultName: string = `Github-Copilot-Chat-${title}.json`;
+				const defaultName = `Github-Copilot-Chat-${title}.json`;
+				const defaultUri = joinPath(await fileDialogService.defaultFilePath(), defaultName);
 
-				const targetUri = await dialogSvc.showSaveDialog({
+				const targetUri = await fileDialogService.showSaveDialog({
 					title: localize2('chat.exportToJSON.save.title', 'Export Chat to JSON').value,
 					filters: [{ name: 'JSON', extensions: ['json'] }],
-					defaultUri: URI.from({ scheme: Schemas.file, path: `/${defaultName}` })
+					defaultUri
 				});
 
 				if (!targetUri) {
+					// User cancelled the save dialog
 					return;
 				}
 
 				try {
-					await fileSvc.writeFile(targetUri, VSBuffer.fromString(json));
+					await fileService.writeFile(targetUri, VSBuffer.fromString(chatData));
 
-					notificationSvc.info(
+					notificationService.info(
 						localize2(
 							'chat.export.success',
 							'Chat exported successfully to {0}',
@@ -98,7 +99,7 @@ export function registerExportActions(): void {
 						).value
 					);
 				} catch (err: unknown) {
-					notificationSvc.error(
+					notificationService.error(
 						localize2(
 							'chat.export.writeError',
 							"Couldn't export chat: {0}",
