@@ -28,7 +28,6 @@ export function registerExportActions(): void {
 					id: 'workbench.action.chat.exportToJSON',
 					title: localize2('chat.exportToJSON.label', 'Export Chat to JSON'),
 					category: CHAT_CATEGORY,
-					icon: Codicon.desktopDownload,
 					precondition: ChatContextKeys.enabled,
 					f1: true,
 					menu: [
@@ -42,11 +41,12 @@ export function registerExportActions(): void {
 							id: MenuId.EditorTitle,
 							when: ActiveEditorContext.isEqualTo(ChatEditorInput.EditorID),
 							group: 'z_export',
-							order: 10
+							order: 1
 						}
 					]
 				});
 			}
+
 			async run(accessor: ServicesAccessor, ...args: unknown[]): Promise<void> {
 				const context = args[0];
 				const chatWidgetService: IChatWidgetService = accessor.get(IChatWidgetService);
@@ -72,9 +72,9 @@ export function registerExportActions(): void {
 					null,
 					4
 				);
-				const title = viewModel.model.title;
+				const sessionId = viewModel.model.sessionId;
 
-				const defaultName = `Github-Copilot-Chat-${title}.json`;
+				const defaultName = `Github-Copilot-Chat-${sessionId}.json`;
 				const defaultUri = joinPath(await fileDialogService.defaultFilePath(), defaultName);
 
 				const targetUri = await fileDialogService.showSaveDialog({
